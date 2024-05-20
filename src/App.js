@@ -213,10 +213,6 @@ const App = () => {
               </Col>
 
               <Col span={24}>
-                <RangePicker />
-              </Col>
-
-              <Col span={24}>
                 <Input placeholder="Outlined" />
               </Col>
 
