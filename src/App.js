@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   LaptopOutlined,
   NotificationOutlined,
@@ -10,6 +10,7 @@ import {
   Calendar,
   Col,
   DatePicker,
+  Drawer,
   Dropdown,
   Input,
   Layout,
@@ -20,6 +21,7 @@ import {
   Space,
   theme,
 } from "antd";
+import "./App.css";
 const { Header, Content, Sider } = Layout;
 const items1 = ["1", "2", "3"].map((key) => ({
   key,
@@ -88,6 +90,38 @@ const App = () => {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+  const [open, setOpen] = useState(false);
+
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
+  const renderSider = (className) => {
+    return (
+      <Sider
+        width={200}
+        style={{
+          background: colorBgContainer,
+        }}
+        className={className}
+      >
+        <Menu
+          mode="inline"
+          defaultSelectedKeys={["1"]}
+          defaultOpenKeys={["sub1"]}
+          style={{
+            height: "100%",
+            borderRight: 0,
+          }}
+          items={items2}
+        />
+      </Sider>
+    );
+  };
   return (
     <Layout>
       <Header
@@ -110,23 +144,18 @@ const App = () => {
       </Header>
 
       <Layout>
-        <Sider
+        <Drawer
+          title="Drawer"
+          placement={"left"}
           width={200}
-          style={{
-            background: colorBgContainer,
-          }}
+          onClose={onClose}
+          open={open}
+          style={{ padding: 0 }}
         >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={["1"]}
-            defaultOpenKeys={["sub1"]}
-            style={{
-              height: "100%",
-              borderRight: 0,
-            }}
-            items={items2}
-          />
-        </Sider>
+          {renderSider("small-width")}
+        </Drawer>
+
+        {renderSider("full-width")}
 
         <Layout
           style={{
@@ -134,15 +163,26 @@ const App = () => {
             minHeight: "100vh",
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-          >
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
+          <Row align={"middle"}>
+            <Col span={16}>
+              <Breadcrumb
+                style={{
+                  margin: "16px 0",
+                }}
+              >
+                <Breadcrumb.Item>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>List</Breadcrumb.Item>
+                <Breadcrumb.Item>App</Breadcrumb.Item>
+              </Breadcrumb>
+            </Col>
+            <Col span={8}>
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <Button onClick={showDrawer} className="small-width">
+                  Open
+                </Button>
+              </div>
+            </Col>
+          </Row>
           <Content
             style={{
               padding: 24,

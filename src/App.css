@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+
+.full-width {
+  display: block;
+}
+
+.small-width {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .full-width {
+    display: none !important;
+    width: 0px !important;
+  }
+
+  .small-width {
+    display: block;
+  }
+}
+
+.ant-drawer-body {
+  padding: 0px !important;
+}
