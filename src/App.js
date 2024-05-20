@@ -1,169 +1,238 @@
-import logo from "./logo.svg";
-import { useReactToPrint } from "react-to-print";
-import "./App.css";
-import { useRef } from "react";
-import FullPagePdf, { html } from "./FullPagePdf";
-import { pdf } from "@react-pdf/renderer";
-import StickerPdf, { stickerUi } from "./stickerPdf";
-// import { ipcRenderer } from "electron";
+import React from "react";
+import {
+  LaptopOutlined,
+  NotificationOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import {
+  Breadcrumb,
+  Button,
+  Calendar,
+  Col,
+  DatePicker,
+  Dropdown,
+  Input,
+  Layout,
+  Menu,
+  Pagination,
+  Row,
+  Select,
+  Space,
+  theme,
+} from "antd";
+const { Header, Content, Sider } = Layout;
+const items1 = ["1", "2", "3"].map((key) => ({
+  key,
+  label: `nav ${key}`,
+}));
+const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map(
+  (icon, index) => {
+    const key = String(index + 1);
+    return {
+      key: `sub${key}`,
+      icon: React.createElement(icon),
+      label: `subnav ${key}`,
+      children: new Array(4).fill(null).map((_, j) => {
+        const subKey = index * 4 + j + 1;
+        return {
+          key: subKey,
+          label: `option${subKey}`,
+        };
+      }),
+    };
+  }
+);
 
-function App() {
-  const printRef = useRef();
-  const iframeRef = useRef();
-  const stickerRef = useRef();
+const items = [
+  {
+    key: "1",
+    label: (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.antgroup.com"
+      >
+        1st menu item
+      </a>
+    ),
+  },
+  {
+    key: "2",
+    label: (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.aliyun.com"
+      >
+        2nd menu item
+      </a>
+    ),
+  },
+  {
+    key: "3",
+    label: (
+      <a
+        target="_blank"
+        rel="noopener noreferrer"
+        href="https://www.luohanacademy.com"
+      >
+        3rd menu item
+      </a>
+    ),
+  },
+];
 
-  // const onClick = async () => {
-  //   if (!window?.electronAPI?.printComponent) {
-  //     // window.print();
-  //     const pdfUrl = await pdf(myDocRender).toBlob();
-  //     console.log({ pdfUrl });
-  //     const pdfURL = URL.createObjectURL(pdfUrl);
+const { RangePicker } = DatePicker;
 
-  //     iframeRef.current.src = pdfURL;
-  //     iframeRef.current.onload = () => {
-  //       debugger;
-  //       console.log("Iframe loaded.....");
-  //       iframeRef.current.contentWindow.print(); // Trigger printing
-  //       URL.revokeObjectURL(pdfURL); // Clean up the object URL
-  //     };
-
-  //     return;
-  //   }
-
-  //   return new Promise(async () => {
-  //     console.log("forwarding print request to the main process...");
-
-  //     const pdfUrl = await pdf(myDocRender).toBlob();
-  //     // const pdfUrl = await pdf(myDocRender).toBuffer();
-  //     console.log({ pdfUrl });
-  //     // debugger;
-  //     const pdfURL = URL.createObjectURL(pdfUrl);
-  //     iframeRef.current.src = pdfURL;
-  //     iframeRef.current.onload = () => {
-  //       const iframeHtmlContent =
-  //         iframeRef?.current?.contentDocument?.body?.outerHTML;
-  //       console.log({ iframeHtmlContent });
-  //       const blob = new Blob([iframeHtmlContent], { type: "text/html" });
-  //       const iframeUrl = URL.createObjectURL(blob);
-
-  //       console.log(window.electronAPI, iframeUrl);
-  //       window?.electronAPI?.printComponent(iframeUrl, (response) => {
-  //         console.log("Main: ", response);
-  //       });
-  //     };
-  //   });
-  // };
-
-  const onClick = async () => {
-    if (!window?.electronAPI?.printComponent) {
-      // window.print();
-
-      iframeRef.current.contentDocument?.write(html);
-      iframeRef.current.contentWindow.print(); // Trigger printing
-      iframeRef?.current?.contentWindow?.document?.close();
-      return;
-    }
-
-    console.log("forwarding print request to the main process...");
-
-    iframeRef.current.contentDocument?.write(html);
-
-    const iframeHtmlContent =
-      iframeRef?.current?.contentDocument?.body?.outerHTML;
-
-    console.log({ iframeHtmlContent });
-
-    const blob = new Blob([iframeHtmlContent], { type: "text/html" });
-
-    const iframeUrl = URL.createObjectURL(blob);
-
-    console.log(window.electronAPI, iframeUrl);
-
-    return new Promise(async () => {
-      window?.electronAPI?.printComponent(iframeUrl, (response) => {
-        console.log("Main: ", response);
-        iframeRef?.current?.contentWindow?.document?.close();
-      });
-    });
-  };
-
-  // const onStickerPrint = async () => {
-  //   const pdfUrl = await pdf(myStickerDocRender).toBlob();
-
-  //   console.log({ pdfUrl });
-
-  //   const pdfURL = URL.createObjectURL(pdfUrl);
-
-  //   if (!window?.electronAPI?.printComponent) {
-  //     stickerRef.current.src = pdfURL;
-  //     stickerRef.current.onload = () => {
-  //       stickerRef.current.contentWindow.print(); // Trigger printing
-  //       URL.revokeObjectURL(pdfURL); // Clean up the object URL
-  //     };
-
-  //     return;
-  //   }
-
-  //   return new Promise(async () => {
-  //     console.log("forwarding print request to the main process...");
-
-  //     window?.electronAPI?.printStickerComponent(pdfUrl, (response) => {
-  //       console.log("Main: ", response);
-  //     });
-  //   });
-  // };
-
-  const onStickerPrint = async () => {
-    stickerRef?.current?.contentDocument?.write(stickerUi);
-
-    if (!window?.electronAPI?.printComponent) {
-      stickerRef.current.contentWindow.print(); // Trigger printing
-      stickerRef?.current?.contentWindow?.document?.close();
-      return;
-    }
-
-    const stickerHtmlContent =
-      stickerRef?.current?.contentDocument?.body?.outerHTML;
-    console.log({ stickerHtmlContent });
-    const blob = new Blob([stickerHtmlContent], { type: "text/html" });
-
-    const iframeUrl = URL.createObjectURL(blob);
-
-    return new Promise(async () => {
-      console.log("forwarding print request to the main process...");
-
-      window?.electronAPI?.printStickerComponent(iframeUrl, (response) => {
-        console.log("Main: ", response);
-        stickerRef?.current?.contentWindow?.document?.close();
-      });
-    });
-  };
-
-  const handleTriggerBoth = () => {
-    onClick();
-    onStickerPrint();
-  };
-
-  const myDocRender = <FullPagePdf />;
-  const myStickerDocRender = <StickerPdf />;
-
+const App = () => {
+  const {
+    token: { colorBgContainer, borderRadiusLG },
+  } = theme.useToken();
   return (
-    <div className="App">
-      <header className="App-header" ref={printRef}>
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
-      <p onClick={onClick}>Print</p>
-      <p onClick={onStickerPrint}>Print Sticker</p>
+    <Layout>
+      <Header
+        style={{
+          display: "flex",
+          alignItems: "center",
+        }}
+      >
+        <div className="demo-logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={["2"]}
+          items={items1}
+          style={{
+            flex: 1,
+            minWidth: 0,
+          }}
+        />
+      </Header>
 
-      <p onClick={handleTriggerBoth}>Print both</p>
+      <Layout>
+        <Sider
+          width={200}
+          style={{
+            background: colorBgContainer,
+          }}
+        >
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            defaultOpenKeys={["sub1"]}
+            style={{
+              height: "100%",
+              borderRight: 0,
+            }}
+            items={items2}
+          />
+        </Sider>
 
-      <iframe ref={iframeRef} style={{ display: "none" }} />
-      <iframe ref={stickerRef} style={{ display: "none" }} />
-    </div>
+        <Layout
+          style={{
+            padding: "0 24px 24px",
+            minHeight: "100vh",
+          }}
+        >
+          <Breadcrumb
+            style={{
+              margin: "16px 0",
+            }}
+          >
+            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>List</Breadcrumb.Item>
+            <Breadcrumb.Item>App</Breadcrumb.Item>
+          </Breadcrumb>
+          <Content
+            style={{
+              padding: 24,
+              margin: 0,
+              minHeight: 280,
+              height: "100%",
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            <Row gutter={[20, 20]}>
+              <Col span={24}>
+                <Pagination defaultCurrent={6} total={500} />
+              </Col>
+
+              <Col span={24}>
+                <Dropdown
+                  menu={{
+                    items,
+                  }}
+                  placement="bottom"
+                  arrow={{
+                    pointAtCenter: true,
+                  }}
+                >
+                  <Button>bottom</Button>
+                </Dropdown>
+              </Col>
+
+              <Col span={24}>
+                <RangePicker />
+              </Col>
+
+              <Col span={24}>
+                <Input placeholder="Outlined" />
+              </Col>
+
+              <Col span={24}>
+                <Select
+                  showSearch
+                  style={{
+                    width: "100%",
+                  }}
+                  placeholder="Search to Select"
+                  optionFilterProp="children"
+                  filterOption={(input, option) =>
+                    (option?.label ?? "").includes(input)
+                  }
+                  filterSort={(optionA, optionB) =>
+                    (optionA?.label ?? "")
+                      .toLowerCase()
+                      .localeCompare((optionB?.label ?? "").toLowerCase())
+                  }
+                  options={[
+                    {
+                      value: "1",
+                      label: "Not Identified",
+                    },
+                    {
+                      value: "2",
+                      label: "Closed",
+                    },
+                    {
+                      value: "3",
+                      label: "Communicated",
+                    },
+                    {
+                      value: "4",
+                      label: "Identified",
+                    },
+                    {
+                      value: "5",
+                      label: "Resolved",
+                    },
+                    {
+                      value: "6",
+                      label: "Cancelled",
+                    },
+                  ]}
+                />
+              </Col>
+
+              <Col span={24}>
+                <Calendar />
+              </Col>
+            </Row>
+          </Content>
+        </Layout>
+      </Layout>
+    </Layout>
   );
-}
-
+};
 export default App;
