@@ -58,4 +58,28 @@ const StickerPdf = () => {
   );
 };
 
+export const stickerUi = `
+<style>
+  body {
+    height: 50mm;
+    width: 90mm
+  }
+</style>
+  <div style="height: 50mm, width: 90mm, display: flex; justify-content: center; align-items: center">
+    <div style="height: 100%; width: 100%; display: flex; justify-content: center; align-items: center;border: 1px solid black">
+      <div style="width: 50%; display: flex; justify-content: center; align-items: center;height: max-content">
+        <img src="https://stickershop.line-scdn.net/stickershop/v1/product/25175483/LINEStorePC/main.png?v=2" style="  height: 15mm;
+        width: 15mm;
+        object-fit: contain;" />
+      </div>
+
+      <div style="width: 50%; display: flex; justify-content: center; align-items: center; height: max-content">
+        <img src="https://stickershop.line-scdn.net/stickershop/v1/product/25175483/LINEStorePC/main.png?v=2"style="  height: 15mm;
+        width: 15mm;
+        object-fit: contain" />
+      </div>
+    </div>
+  </div>
+`;
+
 export default StickerPdf;

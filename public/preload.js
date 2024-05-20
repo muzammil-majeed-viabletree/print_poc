@@ -15,10 +15,10 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
   printComponent: async (url, callback) => {
-    console.log({ url });
-    const pdfUrl = URL.createObjectURL(url);
-    console.log({ pdfUrl });
-    let response = await ipcRenderer.invoke("printComponent", pdfUrl);
+    // console.log({ url });
+    // const pdfUrl = URL.createObjectURL(url);
+    // console.log({ pdfUrl });
+    let response = await ipcRenderer.invoke("printComponent", url);
     callback(response);
   },
   printStickerComponent: async (url, callback) => {
