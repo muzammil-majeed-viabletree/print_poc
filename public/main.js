@@ -18,7 +18,7 @@ function createWindow() {
   });
   // win.webContents.print({silent: true})
 
-  win.loadURL("http://localhost:3000"); // Adjust port if needed
+  win.loadURL("https://poc-electron-view.web.app"); // Adjust port if needed
 
   const printOptions = {
     silent: true,
